@@ -1,0 +1,14 @@
+<scene>
+	<settings dt="0.1" dx="0.01">
+		<grid x="50" y="50" z="50" />
+		<output-format>PNG</output-format>
+		<output-name>density_export_</output-name>
+		<solver tolerance="0.00001" maxIterations="100" />
+	</settings>
+	<source>
+		<pos x="1.0" y="0.0" z="0.5" />
+		<size w="1.0" h="1.0" d="1.0" />
+	</source>
+	<field />
+    <log-level>2</log-level>
+</scene>
