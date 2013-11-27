@@ -2,8 +2,8 @@
 # Fluid Dynamics Engine CMake file
 #================================================================================
 
-cmake_minimum_required(VERSION 2.6)
-set(CMAKE_BUILD_TYPE Debug)
+# cmake_minimum_required(VERSION 2.6)
+# set(CMAKE_BUILD_TYPE Debug)
 if("${CMAKE_BUILD_TYPE}" EQUAL "Debug")
   set(CMAKE_VERBOSE_MAKEFILE TRUE) # this does not even work...
 endif()
