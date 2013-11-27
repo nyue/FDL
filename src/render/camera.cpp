@@ -6,11 +6,11 @@
 #include <assert.h>
 #include <math.h>
 
-#include "cg/vecmath/vec2.hpp"
-#include "cg/vecmath/vec3.hpp"
-#include "cg/vecmath/vec4.hpp"
-#include "cg/vecmath/mat4.hpp"
-#include "cg/vecmath/mat3.hpp"
+//#include "cg/vecmath/vec2.hpp"
+//#include "cg/vecmath/vec3.hpp"
+//#include "cg/vecmath/vec4.hpp"
+//#include "cg/vecmath/mat4.hpp"
+//#include "cg/vecmath/mat3.hpp"
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -29,7 +29,7 @@ namespace fdl {
 	
 static const double PI = 3.14159265;
 
-using namespace cg::vecmath;
+    // using namespace cg::vecmath;
 
 /**
  * The upper limit of the theta angle allowed when orbiting. Avoids gimbal lock.
@@ -43,9 +43,9 @@ Camera::Camera()
 	m_far = 1000.0;
 	m_aspect = 1;
 	
-	m_eye.set(5.0, 3.0, -3.0);
-	m_target.set(0, 0, 0);
-	m_up.set(0, 1.0, 0);
+	m_eye.setValue(5.0, 3.0, -3.0);
+	m_target.setValue(0, 0, 0);
+	m_up.setValue(0.0, 1.0, 0.0);
 }
 
 /**
@@ -56,9 +56,9 @@ Camera::Camera()
  * @param up
  * @param camName
  */
-Camera::Camera(	const Vector3f& eye, 
-				const Vector3f& target, 
-				const Vector3f& up, 
+Camera::Camera(	const Imath::V3f& eye, 
+				const Imath::V3f& target, 
+				const Imath::V3f& up, 
 				float yFov, float near, float far)
 {
 	m_eye = eye;
@@ -97,7 +97,7 @@ void Camera::updateMatrices()
 	m_projection[2][2] = qq;
 	m_projection[2][3] = qn;
 	m_projection[3][2] = -1.0;
-	invert(m_inverseProjection, m_projection);
+	m_inverseProjection = m_projection.inverse();
 
 	/**
 	 * Generate a view transformation matrix for OpenGL
@@ -107,22 +107,22 @@ void Camera::updateMatrices()
 	m_u.normalize();
 	m_v = m_up;
 	m_v.normalize();
-	m_w = cross(m_u, m_v);
-	m_q = cross(m_w, m_u);
+	m_w = m_u.cross(m_v);
+	m_q = m_w.cross(m_u);
 	m_w.normalize();
 	m_q.normalize();
 
-	m_orientation.identity();
-	m_translate.identity();
+	m_orientation.makeIdentity();
+	m_translate.makeIdentity();
 	m_orientation[0][0] = m_w.x;	m_orientation[0][1] = m_w.y;	m_orientation[0][2] = m_w.z;
 	m_orientation[1][0] = m_q.x;	m_orientation[1][1] = m_q.y;	m_orientation[1][2] = m_q.z;
 	m_orientation[2][0] = -m_u.x;	m_orientation[2][1] = -m_u.y;	m_orientation[2][2] = -m_u.z;
 	m_translate[0][3] = -m_eye.x;
 	m_translate[1][3] = -m_eye.y;
 	m_translate[2][3] = -m_eye.z;
-	m_inverseOrientation = m_orientation.getTranspose();
+	m_inverseOrientation = m_orientation.transpose();
 	m_view = m_orientation * m_translate;
-	invert(m_inverseView, m_view);
+	m_inverseView = m_view.inverse();
 }
 
 /**
@@ -130,21 +130,21 @@ void Camera::updateMatrices()
  * 
  * @return
  */
-cg::vecmath::Vector3f Camera::getEye() const {
+Imath::V3f Camera::getEye() const {
 	return m_eye;
 }
 
 /**
  * Sets the eye of the camera.
  */
-void Camera::setEye(const cg::vecmath::Vector3f& eyeVec) {
+void Camera::setEye(const Imath::V3f& eyeVec) {
 	m_eye = eyeVec;
 }
 
 /**
  * Sets the target of the camera.
  */
-void Camera::setTarget(const cg::vecmath::Vector3f& targetVec) {
+void Camera::setTarget(const Imath::V3f& targetVec) {
 	m_target = targetVec;
 }
 
@@ -157,7 +157,7 @@ void Camera::setTarget(const cg::vecmath::Vector3f& targetVec) {
  */
 void Camera::dolly(float amount)
 {
-	Vector3f diff;
+	Imath::V3f diff;
 	diff = m_eye - m_target;
 	m_eye = (diff * amount) + m_eye;
 }
@@ -168,9 +168,9 @@ void Camera::dolly(float amount)
  * @param lastMousePoint
  * @param currMousePoint
  */
-void Camera::orbit(const cg::vecmath::Point2f& lastMousePoint, const cg::vecmath::Point2f& currMousePoint)
+void Camera::orbit(const Imath::V2f& lastMousePoint, const Imath::V2f& currMousePoint)
 {
-	Vector2f mouseDelta(currMousePoint);
+	Imath::V2f mouseDelta(currMousePoint);
 	mouseDelta -= lastMousePoint;
 
 	// Construct an arbitrary frame at the target with the z-axis the up
@@ -178,19 +178,25 @@ void Camera::orbit(const cg::vecmath::Point2f& lastMousePoint, const cg::vecmath
 	m_w = m_up;
 	m_w.normalize();
 	m_u = nonParallelVector(m_w);
-	m_v = cross(m_w, m_u);
+	m_v = m_w.cross(m_u);
 	m_v.normalize();
-	m_u = cross(m_v, m_w);
+	m_u = m_v.cross(m_w);
+	/*
 	m_basis.setColumn(0, m_u);
 	m_basis.setColumn(1, m_v);
 	m_basis.setColumn(2, m_w);
-	Matrix4f frame(m_basis, m_target, 1);
-	Matrix4f frameInv;
-	invert(frameInv, frame);
+	*/
+	m_basis = Imath::M33f(m_u.x,m_v.x,m_w.x,
+	        m_u.y,m_v.y,m_w.y,
+	        m_u.z,m_v.z,m_w.z);
+	Imath::M44f frame(m_basis, m_target);
+	Imath::M44f frameInv;
+	frameInv = frame.inverse();
 
 	// write eye in that frame
-	Vector4f e(m_eye.x, m_eye.y, m_eye.z, 0.0);
-	e = frameInv * e;
+	Imath::V4f e(m_eye.x, m_eye.y, m_eye.z, 0.0);
+	// e = frameInv * e;
+    e = e * frameInv;
 
 	// write e in spherical coordinates
 	float r = e.length();
@@ -208,13 +214,14 @@ void Camera::orbit(const cg::vecmath::Point2f& lastMousePoint, const cg::vecmath
 	}
 
 	// write e back in cartesian world coords
-	e.set(	(float)(r * cos(phi) * cos(theta)),
+	e = Imath::V4f(	(float)(r * cos(phi) * cos(theta)),
 			(float)(r * sin(phi) * cos(theta)),
 			(float)(r * sin(theta)), 1.0);
 
 	m_eye.normalize();
-	e = frame * e;
-	m_eye.set(e.x,e.y,e.z);
+	// e = frame * e;
+    e = e * frame;
+	m_eye.setValue(e.x,e.y,e.z);
 }
 
 void Camera::setAspect(float d)
@@ -222,21 +229,21 @@ void Camera::setAspect(float d)
 	m_aspect = d;
 }
 
-void Camera::setDirection(const cg::vecmath::Vector3f& direction)
+void Camera::setDirection(const Imath::V3f& direction)
 {
 	m_target = m_eye;
 	m_target += direction;
 }
 
-void Camera::setUp(const cg::vecmath::Vector3f& up)
+void Camera::setUp(const Imath::V3f& up)
 {
 	m_up = up;
 }
 
-cg::vecmath::Vector3f Camera::nonParallelVector(const cg::vecmath::Vector3f& v)
+Imath::V3f Camera::nonParallelVector(const Imath::V3f& v)
 {
 	int i = argmin(abs(v.x), abs(v.y), abs(v.z));
-	cg::vecmath::Vector3f u;
+	Imath::V3f u;
 	if (i == 0) {
 		u.x = 1.0;
 	} else if (i == 1) {

@@ -5,6 +5,8 @@
 cmake_minimum_required( VERSION 2.6 )
 project( FDL )
 # set( CMAKE_BUILD_TYPE Debug)
+find_package ( ILMBase )
+include_directories ( ${ILMBASE_INCLUDE_DIRS} )
 
 if(APPLE AND UNIX)
   # OS X XCode already define it

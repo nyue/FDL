@@ -29,8 +29,8 @@ GlutApp::GlutApp(std::string title, int width, int height) : m_windowTitle(title
 	m_running = false;
 	
 	m_camera = new Camera();
-	lastMousePt = new cg::vecmath::Point2f();
-	currMousePt = new cg::vecmath::Point2f();
+	lastMousePt = new Imath::V2f();
+	currMousePt = new Imath::V2f();
 	
 	self = this;
 }
@@ -71,7 +71,7 @@ int GlutApp::render()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	cg::vecmath::Vector3f* eye = new cg::vecmath::Vector3f();
+	Imath::V3f* eye = new Imath::V3f();
 	renderCamera(*eye);
 	
 	glutSolidTeapot(1.0);
@@ -90,12 +90,13 @@ int GlutApp::render()
 	glutSwapBuffers();
 }
 
-void GlutApp::windowToViewport(cg::vecmath::Point2f& p) const
+void GlutApp::windowToViewport(Imath::V2f& p) const
 {
-	p.set((2.0f * p.x - m_width) / m_width, (2.0f * (m_height - p.y - 1.0) - m_height) / m_height);
+	p.setValue((float)((2.0f * p.x - m_width) / m_width),
+	        (float)((2.0f * (m_height - p.y - 1.0) - m_height) / m_height));
 }
 
-void GlutApp::renderCamera(const cg::vecmath::Vector3f& eye)
+void GlutApp::renderCamera(const Imath::V3f& eye)
 {
 	m_camera->updateMatrices();
 	//eye.set(mainCamera.getEye());
@@ -103,10 +104,14 @@ void GlutApp::renderCamera(const cg::vecmath::Vector3f& eye)
 	glLoadIdentity();
 	float proj[16];
 	float view[16];
+	/*
 	m_camera->getProjectionMatrix().toArray(proj);
 	m_camera->getViewMatrix().toArray(view);
 	glMultMatrixf(proj);
 	glMultMatrixf(view);
+	*/
+    glMultMatrixf(m_camera->getProjectionMatrix().getValue());
+    glMultMatrixf(m_camera->getViewMatrix().getValue());
 //	rotationGizmo.setCamera(mainCamera);
 }
 
@@ -143,7 +148,7 @@ int GlutApp::keyReleased(unsigned char key)
 int GlutApp::mousePressed(int button, int x, int y)
 {
 	// std::cout << "mouse pressed: " << x << ", " << y << std::endl;
-	lastMousePt->set(x, y);
+	lastMousePt->setValue(x,y);
 	windowToViewport(*lastMousePt);
 	m_button1Down = true;
 }
@@ -157,7 +162,7 @@ int GlutApp::mouseReleased(int button, int x, int y)
 int GlutApp::mouseMoved(int x, int y)
 {
 	// std::cout << "mouse moved: " << x << ", " << y << std::endl;
-	currMousePt->set(x, y);
+	currMousePt->setValue(x,y);
 	windowToViewport(*currMousePt);
 	m_camera->orbit(*lastMousePt, *currMousePt);
 	*lastMousePt = *currMousePt;

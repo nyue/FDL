@@ -9,11 +9,12 @@
 #include <assert.h>
 #include <math.h>
 
-#include "cg/vecmath/vec2.hpp"
-#include "cg/vecmath/vec3.hpp"
-#include "cg/vecmath/vec4.hpp"
-#include "cg/vecmath/mat4.hpp"
-#include "cg/vecmath/mat3.hpp"
+//#include "cg/vecmath/vec2.hpp"
+//#include "cg/vecmath/vec3.hpp"
+//#include "cg/vecmath/vec4.hpp"
+//#include "cg/vecmath/mat4.hpp"
+//#include "cg/vecmath/mat3.hpp"
+#include <OpenEXR/ImathMatrix.h>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -42,8 +43,8 @@ public:
 	 * @param up
 	 * @param camName
 	 */
-	Camera(	const cg::vecmath::Vector3f& eye, const cg::vecmath::Vector3f& target, 
-			const cg::vecmath::Vector3f& up, float yFov, float near, float far);
+	Camera(	const Imath::V3f& eye, const Imath::V3f& target,
+			const Imath::V3f& up, float yFov, float near, float far);
 	
 	~Camera();
 	
@@ -55,42 +56,42 @@ public:
 	/**
 	 * Return the orientation matrix
 	 */
-	cg::vecmath::Matrix4f getOrientationMatrix() const {
+	Imath::M44f getOrientationMatrix() const {
 		return m_orientation;
 	}
 
 	/**
 	 * Return the inverse of the orientation matrix
 	 */
-	cg::vecmath::Matrix4f getInverseOrientationMatrix() const {
+	Imath::M44f getInverseOrientationMatrix() const {
 		return m_inverseOrientation;
 	}
 	
 	/**
 	 * Return the view matrix
 	 */
-	cg::vecmath::Matrix4f getViewMatrix() const {
+	Imath::M44f getViewMatrix() const {
 		return m_view;
 	}
 
 	/**
 	 * Return the inverse of the view matrix
 	 */
-	cg::vecmath::Matrix4f getInverseViewMatrix() const {
+	Imath::M44f getInverseViewMatrix() const {
 		return m_inverseView;
 	}
 
 	/**
 	 * Return the projection matrix
 	 */
-	cg::vecmath::Matrix4f getProjectionMatrix() const {
+	Imath::M44f getProjectionMatrix() const {
 		return m_projection;
 	}
 
 	/**
 	 * Return the inverse of the projection matrix
 	 */
-	cg::vecmath::Matrix4f getInverseProjectionMatrix() const {
+	Imath::M44f getInverseProjectionMatrix() const {
 		return m_inverseProjection;
 	}
 
@@ -99,17 +100,17 @@ public:
 	 * 
 	 * @return
 	 */
-	cg::vecmath::Vector3f getEye() const;
+	Imath::V3f getEye() const;
 
 	/**
 	 * Sets the eye of the camera.
 	 */
-	void setEye(const cg::vecmath::Vector3f& eyeVec);
+	void setEye(const Imath::V3f& eyeVec);
 
 	/**
 	 * Sets the target of the camera.
 	 */
-	void setTarget(const cg::vecmath::Vector3f& targetVec);
+	void setTarget(const Imath::V3f& targetVec);
 	
 
 	/**
@@ -126,13 +127,13 @@ public:
 	 * @param lastMousePoint
 	 * @param currMousePoint
 	 */
-	void orbit(const cg::vecmath::Point2f& lastMousePoint, const cg::vecmath::Point2f& currMousePoint);
+	void orbit(const Imath::V2f& lastMousePoint, const Imath::V2f& currMousePoint);
 
 	void setAspect(float d);
 	
-	void setDirection(const cg::vecmath::Vector3f& direction);
+	void setDirection(const Imath::V3f& direction);
 	
-	void setUp(const cg::vecmath::Vector3f& up);
+	void setUp(const Imath::V3f& up);
 
 protected:
 	/** The YFOV in degrees */
@@ -148,30 +149,30 @@ protected:
 	float m_aspect;
 
 	// The position and orientation of the camera
-	cg::vecmath::Vector3f m_eye;
-	cg::vecmath::Vector3f m_target;
-	cg::vecmath::Vector3f m_up;
+	Imath::V3f m_eye;
+	Imath::V3f m_target;
+	Imath::V3f m_up;
 
 	// Some temporary space for computing camera motions and transformations
-	cg::vecmath::Vector3f m_u;
-	cg::vecmath::Vector3f m_v;
-	cg::vecmath::Vector3f m_w;
-	cg::vecmath::Vector3f m_q;
-	cg::vecmath::Matrix3f m_basis;
+	Imath::V3f m_u;
+	Imath::V3f m_v;
+	Imath::V3f m_w;
+	Imath::V3f m_q;
+	Imath::M33f m_basis;
 	
 private:
 	/** Projection matrix */
-	cg::vecmath::Matrix4f m_projection;
-	cg::vecmath::Matrix4f m_inverseProjection;
+	Imath::M44f m_projection;
+	Imath::M44f m_inverseProjection;
 
 	/** Orientation matrix (view w/o translate) */
-	cg::vecmath::Matrix4f m_orientation;
-	cg::vecmath::Matrix4f m_inverseOrientation;
+	Imath::M44f m_orientation;
+	Imath::M44f m_inverseOrientation;
 
 	/** View matrix */
-	cg::vecmath::Matrix4f m_view;
-	cg::vecmath::Matrix4f m_inverseView;
-	cg::vecmath::Matrix4f m_translate;
+	Imath::M44f m_view;
+	Imath::M44f m_inverseView;
+	Imath::M44f m_translate;
 	
 	/**
 	 * Returns 0 if a is smallest, 1 if b is smallest, 2 if c is smallest.
@@ -183,7 +184,7 @@ private:
 	/**
 	 * Returns a vector that is not nearly parallel to v.
 	 */
-	static cg::vecmath::Vector3f nonParallelVector(const cg::vecmath::Vector3f& v);
+	static Imath::V3f nonParallelVector(const Imath::V3f& v);
 	
 };
 

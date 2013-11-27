@@ -14,8 +14,9 @@
 #include <boost/thread.hpp>
 #include <boost/signal.hpp>
 
-#include "cg/vecmath/vec2.hpp"
-#include "cg/vecmath/vec3.hpp"
+// #include "cg/vecmath/vec2.hpp"
+// #include "cg/vecmath/vec3.hpp"
+#include <OpenEXR/ImathVec.h>
 
 #include "render/camera.h"
 
@@ -62,8 +63,8 @@ public:
 	int init();
 	int getWidth() { return m_width; }
 	int getHeight() { return m_height; }
-	void windowToViewport(cg::vecmath::Point2f& p) const;
-	void renderCamera(const cg::vecmath::Vector3f& eye);
+	void windowToViewport(Imath::V2f& p) const;
+	void renderCamera(const Imath::V3f& eye);
 	
 protected:
 	void start();
@@ -76,8 +77,8 @@ protected:
 	std::string m_windowTitle;
 	boost::mutex m_mutex;
 	Camera* m_camera;
-	cg::vecmath::Point2f* lastMousePt;
-	cg::vecmath::Point2f* currMousePt;
+	Imath::V2f *lastMousePt;
+	Imath::V2f* currMousePt;
 	
 	virtual int render();
 	virtual int resize(int width, int height);

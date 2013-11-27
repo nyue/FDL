@@ -161,4 +161,8 @@ target_link_libraries ( fdl
   ${ZLIB_LIBRARIES}
   ${GLUT_LIBRARY}
   ${OPENGL_LIBRARY}
+  ${Ilmbase_HALF_LIBRARY}
+  ${Ilmbase_IEX_LIBRARY}
+  # Ilmbase_ILMTHREAD_LIBRARY
+  ${Ilmbase_IMATH_LIBRARY}
 )
