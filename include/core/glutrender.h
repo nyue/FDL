@@ -7,7 +7,7 @@
 #include <iostream>
 
 #if defined(__LINUX__)
-#include <gl/glut.h>
+#include <GL/glut.h>
 #elif defined(__APPLE__)
 #include <GLUT/glut.h>
 #elif defined(__WIN32__)
