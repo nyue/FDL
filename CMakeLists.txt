@@ -5,6 +5,18 @@
 cmake_minimum_required( VERSION 2.6 )
 project( FDL )
 # set( CMAKE_BUILD_TYPE Debug)
+
+if(APPLE AND UNIX)
+  # OS X XCode already define it
+  ADD_DEFINITIONS ( -D__APPLE__ )
+elseif(UNIX AND NOT APPLE)
+  ADD_DEFINITIONS ( -D__LINUX__ )
+elseif(WIN32)
+  ADD_DEFINITIONS ( -D__WIN32__ )
+endif(APPLE AND UNIX)
+
+
+
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/lib)
 
