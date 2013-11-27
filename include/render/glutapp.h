@@ -58,7 +58,7 @@ static int die;
 class GlutApp {
 public:
 	GlutApp(std::string title="Glut Window", int width=800, int height=600);
-	~GlutApp();
+	virtual ~GlutApp();
 	int init();
 	int getWidth() { return m_width; }
 	int getHeight() { return m_height; }
