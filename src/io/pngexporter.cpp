@@ -1,4 +1,5 @@
 #include <png.h>
+#include <vector>
 
 #include "io/pngexporter.h"
 #include "logger/logger.h"
@@ -64,8 +65,8 @@ void PngExporter::exportDensity(int counter, std::string prefix, float* field, i
 	std::string number = std::string(buffer);
 	int totalSize = xRes * yRes * zRes;
 
-	unsigned char pngbuf[xRes*yRes*4];
-	unsigned char* rows[yRes];
+	std::vector<unsigned char> pngbuf(xRes*yRes*4);
+	std::vector<unsigned char*> rows(yRes);
 	for (int j=0; j<yRes; ++j) {
 		for (int i=0; i<xRes; ++i) {
 			float val = 0;
@@ -87,7 +88,7 @@ void PngExporter::exportDensity(int counter, std::string prefix, float* field, i
 	std::string filenamePNG = prefix + number + std::string(".png");
 
 	DEV() << "Writing " << filenamePNG;
-	writePNG(filenamePNG.c_str(), rows, xRes, yRes);
+	writePNG(filenamePNG.c_str(), rows.data(), xRes, yRes);
 }
 
 /**

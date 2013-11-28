@@ -44,6 +44,7 @@ long int ExporterBase::start(fdl::Grid& grid)
 	t1.join();
 	
 	m_writeMutex.unlock();
+	return 0;
 }
 
 /**

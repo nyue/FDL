@@ -88,6 +88,7 @@ int GlutApp::render()
 
 	// swap drawing buffers
 	glutSwapBuffers();
+	return 0;
 }
 
 void GlutApp::windowToViewport(Imath::V2f& p) const
@@ -128,6 +129,8 @@ int GlutApp::resize(int width, int height)
 	//glOrtho(0, self->m_width, self->m_height, 0, -1.0f, 1.0f);
 	// glMatrixMode(GL_MODELVIEW);
 	m_camera->setAspect(width / height);
+
+	return 0;
 }
 
 int GlutApp::keyPressed(unsigned char key)
@@ -139,10 +142,12 @@ int GlutApp::keyPressed(unsigned char key)
 	}else{
 		std::cout << "key pressed: " << key << std::endl;
 	}
+	return 0;
 }
 
 int GlutApp::keyReleased(unsigned char key)
 {
+	return 0;
 }
 
 int GlutApp::mousePressed(int button, int x, int y)
@@ -151,12 +156,14 @@ int GlutApp::mousePressed(int button, int x, int y)
 	lastMousePt->setValue(x,y);
 	windowToViewport(*lastMousePt);
 	m_button1Down = true;
+	return 0;
 }
 
 int GlutApp::mouseReleased(int button, int x, int y)
 {
 	// std::cout << "mouse released: " << x << ", " << y << std::endl;
 	m_button1Down = false;
+	return 0;
 }
 
 int GlutApp::mouseMoved(int x, int y)
@@ -166,6 +173,7 @@ int GlutApp::mouseMoved(int x, int y)
 	windowToViewport(*currMousePt);
 	m_camera->orbit(*lastMousePt, *currMousePt);
 	*lastMousePt = *currMousePt;
+	return 0;
 }
 
 /**

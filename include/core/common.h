@@ -22,6 +22,9 @@
 
 #ifndef __FDL_COMMON_H
 #define __FDL_COMMON_H
+#ifdef WIN32
+#include <math.h>
+#endif // WIN32
 #include <cmath>
 
 #include <boost/numeric/ublas/vector.hpp>

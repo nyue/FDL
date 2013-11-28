@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 	std::vector<int> grid_dims(3, 50);	// grid dimensions
 	double dx = 0.01;
 	double dt = 0.1;
-	double cg_tol = pow( FLT_EPSILON, 0.5 ); 	
+	double cg_tol = pow( FLT_EPSILON, 0.5f ); 	
 	std::string output_prefix = "density_export_";
 	
 	try {

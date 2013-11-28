@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <cstdio>
 
 #if defined(__LINUX__)
 #include <GL/glut.h>
@@ -210,9 +211,9 @@ namespace GlutRender {
 	}
 
 	void exportDensity(int i) {
-		char fname[128], cmd[128];
-		snprintf(fname, sizeof(fname), "output/density-%i.vol", i);
-		snprintf(cmd, sizeof(fname), "gzip -f output/density-%i.vol&", i);
+		char fname[1024], cmd[1024];
+		sprintf(fname, "output/density-%i.vol", i);
+		sprintf(cmd, "gzip -f output/density-%i.vol&", i);
 		std::cout << "    + Saving \"" << fname << "\"" << std::endl;
 		std::ofstream os(fname);
 	/*
@@ -241,8 +242,8 @@ namespace GlutRender {
 	}
 
 	void screenshot(int i) {
-		char fname[128];
-		snprintf(fname, sizeof(fname), "output/screenshot-%i.png", i);
+		char fname[1024];
+		sprintf(fname, "output/screenshot-%i.png", i);
 		std::cout << "    + Saving \"" << fname << "\"" << std::endl;
 
 		FILE *file = fopen(fname, "wb");

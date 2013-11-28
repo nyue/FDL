@@ -8,7 +8,7 @@ if("${CMAKE_BUILD_TYPE}" EQUAL "Debug")
   set(CMAKE_VERBOSE_MAKEFILE TRUE) # this does not even work...
 endif()
 
-set(BOOST_LIBS thread date_time system program_options)
+set(BOOST_LIBS chrono signals thread date_time system program_options)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 # find_package(GSL REQUIRED)
@@ -16,6 +16,8 @@ find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
+
+include_directories ( ${GLUT_INCLUDE_DIR} )
 
 if(APPLE AND UNIX)
   set(LIB_PATH "/usr/local/lib")
@@ -26,6 +28,7 @@ elseif(UNIX AND NOT APPLE)
 elseif(WIN32)
   set(LIB_PATH "C:/msys/1.0/local/lib")
   set(INC_PATH "C:/msys/1.0/local/include")
+  add_definitions ( -DPNG_STDIO_SUPPORTED )
 endif(APPLE AND UNIX)
 
 #--------------------------------------------------------------------------------

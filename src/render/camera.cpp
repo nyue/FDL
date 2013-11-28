@@ -59,14 +59,14 @@ Camera::Camera()
 Camera::Camera(	const Imath::V3f& eye, 
 				const Imath::V3f& target, 
 				const Imath::V3f& up, 
-				float yFov, float near, float far)
+				float yFov, float nearValue, float farValue)
 {
 	m_eye = eye;
 	m_target = target;
 	m_up = up;
 	m_fov = yFov;
-	m_near = near;
-	m_far = far;
+	m_near = nearValue;
+	m_far = farValue;
 }
 
 /**

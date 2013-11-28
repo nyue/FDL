@@ -10,7 +10,9 @@
 #include "logger/syslogwriter.h"
 
 #include <boost/thread/mutex.hpp>
+#ifndef WIN32
 #include <syslog.h>
+#endif // WIN32
 #include <stdarg.h>
 
 
@@ -48,11 +50,11 @@ void SyslogWriter::write( Logger::LEVEL level, const std::string& identity, cons
 	
 	std::ostringstream m;
 	m << "[" << Logger::loggerLevelAsString( level ) << "] " << message;
-	
+#ifndef WIN32
 	openlog( identity.c_str(), LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL5 );
 	setlogmask( LOG_UPTO( LOG_NOTICE ) );
 	syslog(mapLevel( level ), "%s", m.str().c_str() );
-	
+#endif // WIN32
 }
 
 /**
@@ -64,7 +66,9 @@ void SyslogWriter::write( Logger::LEVEL level, const std::string& identity, cons
  *
  */
 int SyslogWriter::mapLevel( const Logger::LEVEL& level ) {
-	
+#ifdef WIN32
+	return 0;
+#else // WIN32
 	switch ( level ) {
 		case Logger::ERROR:
 			return LOG_ERR;
@@ -76,6 +80,7 @@ int SyslogWriter::mapLevel( const Logger::LEVEL& level ) {
 			return LOG_NOTICE;
 	}
 	return LOG_DEBUG;
+#endif // WIN32
 }
 
 }	// namespace fdl
